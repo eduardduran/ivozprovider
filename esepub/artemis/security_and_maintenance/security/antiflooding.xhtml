@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>SIP Antiflooding</title>
+    
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/banner.css" type="text/css" /> 
+  </head>
+  <body role="document">
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.xhtml" title="Índice General"
+             accesskey="I">índice</a></li>
+        <li class="right" >
+          <a href="authorized_ip_ranges.xhtml" title="Rangos de IPs autorizadas"
+             accesskey="N">siguiente</a> |</li>
+        <li class="right" >
+          <a href="firewall.xhtml" title="Cortafuegos"
+             accesskey="P">anterior</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.xhtml">documentación de IvozProvider - Artemis</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.xhtml" accesskey="U">Seguridad</a> &#187;</li> 
+      </ul>
+    </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="sip-antiflooding">
+<h1>SIP Antiflooding</h1>
+<p>Ambos SIP proxies incluidos en la instalación de IvozProvider, KamUsers para la señalización con los clientes y Kamtrunks para la señalización con proveedores, utilizan el <a class="reference external" href="http://kamailio.org/docs/modules/5.1.x/modules/pike.html">módulo PIKE</a><span class="link-target"> [http://kamailio.org/docs/modules/5.1.x/modules/pike.html]</span> para evitar ataques de denegación de servicio.</p>
+<p>Este módulo controla todas los mensajes SIP recibidos de cada origen IP y bloquea aquellos orígenes que superen cierto límite en un intervalo de muestreo concreto.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Advertencia</p>
+<p class="last"><strong>Las IPs no se bloquean permanentemente</strong>, se volverán a permitir mensajes de dichos orígenes tan pronto como transcurra un período de muestreo en el que no superen el umbral.</p>
+</div>
+<p>Los parámetros actuales son:</p>
+<ul class="simple">
+<li><p class="first"><strong>Período de muestreo</strong>: 2 segundos.</p>
+</li>
+<li><p class="first"><strong>Número máximo de peticiones</strong>: 30.</p>
+</li>
+</ul>
+<p>Esto significa que <em>cualquier dirección IP que envíe más de 30 peticiones en un tramo de 2 segundos se bloqueará (ignorando sus mensajes) hasta que transcurran 2 segundos en los que el origen envíe menos de 30 peticiones</em>.</p>
+<div class="section" id="antiflooding-excluded-sources">
+<h2>Orígenes excluídos del mecanismo antiflooding:</h2>
+<p>Estos orígenes no se evalúan contra el antiflood:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Tanto en KamUsers como en Kamtrunks:</dt>
+<dd><ul class="first last">
+<li><p class="first">Componentes internos de IvozProvider</p>
+</li>
+<li><p class="first">IP en la sección <a class="reference internal" href="../../administration_portal/platform/antiflood_trusted_ips.xhtml#antiflood-trusted-ips"><span class="std std-ref">Antiflood trusted IPs</span></a></p>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>KamUsers:</dt>
+<dd><ul class="first last">
+<li><p class="first">IPs en <a class="reference internal" href="authorized_ip_ranges.xhtml#client-authorized-ip-ranges"><span class="std std-ref">IPs autorizadas por cliente</span></a> (vPBX, retail, residencial)</p>
+</li>
+<li><p class="first">Direcciones IPs de los clientes wholesale</p>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Advertencia</p>
+<p class="last">Las direcciones IP y los rangos añadidos en <a class="reference internal" href="authorized_ip_ranges.xhtml#client-authorized-ip-ranges"><span class="std std-ref">IPs autorizadas por cliente</span></a> se excluirán del antiflood, aunque el <strong>Filtrado por IP</strong> esté desactivado.</p>
+</div>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>KamTrunks:</dt>
+<dd><ul class="first last">
+<li><p class="first">Direcciones IP de los Proveedores de DDIs</p>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition tip">
+<p class="first admonition-title">Truco</p>
+<p class="last">En el escenario clásico tras NAT en el que cientos de terminales SIP presentan la misma dirección IP pública, esta IP debe ser estática y debe ser añadida a <a class="reference internal" href="authorized_ip_ranges.xhtml#client-authorized-ip-ranges"><span class="std std-ref">IPs autorizadas por cliente</span></a> para evitar que sea bloqueada por el mecanismo de antiflooding (tras un apagón eléctrico o similar).</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016-2019, Irontec.
+      Creado con <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.9.
+    </div>
+  </body>
+</html>
